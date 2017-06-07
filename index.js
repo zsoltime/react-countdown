@@ -51,6 +51,26 @@ SvgCircle.defaultProps = {
   strokeWidth: 8,
 };
 
+const Display = props => (
+  <div className="clock__display">
+    <SvgCircle
+      className="clock__circle"
+      max={props.max}
+      done={props.amount}
+    />
+    <div className={`clock__text clock__text--${props.unit}`}>
+      <span className="clock__amount">{zerofill(props.amount)}</span>
+      <span className="clock__unit">{props.unit}</span>
+    </div>
+  </div>
+);
+
+Display.propTypes = {
+  amount: React.PropTypes.number.isRequired,
+  max: React.PropTypes.number.isRequired,
+  unit: React.PropTypes.string.isRequired,
+};
+
 class Clock extends React.Component {
   constructor(props) {
     super(props);
@@ -82,34 +102,26 @@ class Clock extends React.Component {
   render() {
     return (
       <div className="clock">
-        <div className="clock__display">
-          <SvgCircle className="clock__circle" max={365} done={this.state.days} />
-          <div className="clock__text clock__text--days">
-            <span className="clock__amount">{zerofill(this.state.days)}</span>
-            <span className="clock__unit">days</span>
-          </div>
-        </div>
-        <div className="clock__display">
-          <SvgCircle max={24} done={this.state.hours} />
-          <div className="clock__text clock__text--hours">
-            <span className="clock__amount">{zerofill(this.state.hours)}</span>
-            <span className="clock__unit">hours</span>
-          </div>
-        </div>
-        <div className="clock__display">
-          <SvgCircle max={60} done={this.state.minutes} />
-          <div className="clock__text clock__text--minutes">
-            <span className="clock__amount">{zerofill(this.state.minutes)}</span>
-            <span className="clock__unit">minutes</span>
-          </div>
-        </div>
-        <div className="clock__display">
-          <SvgCircle max={60} done={this.state.seconds} />
-          <div className="clock__text clock__text--seconds">
-            <span className="clock__amount">{zerofill(this.state.seconds)}</span>
-            <span className="clock__unit">seconds</span>
-          </div>
-        </div>
+        <Display
+          amount={this.state.days}
+          max={365}
+          unit="days"
+        />
+        <Display
+          amount={this.state.hours}
+          max={24}
+          unit="hours"
+        />
+        <Display
+          amount={this.state.minutes}
+          max={60}
+          unit="minutes"
+        />
+        <Display
+          amount={this.state.seconds}
+          max={60}
+          unit="seconds"
+        />
       </div>
     );
   }
@@ -119,7 +131,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      deadline: '2017-7-1',
+      deadline: props.initialDate,
       error: undefined,
       newDeadline: undefined,
     };
@@ -173,5 +185,13 @@ class App extends React.Component {
     );
   }
 }
+
+App.defaultProps = {
+  initialDate: '2017-8-8',
+};
+
+App.propTypes = {
+  initialDate: React.PropTypes.string,
+};
 
 ReactDOM.render(<App />, document.getElementById('app'));
